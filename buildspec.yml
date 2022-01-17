@@ -21,8 +21,9 @@ phases:
       - echo Build completed on `date`
       - echo Pushing the Docker images...
       - docker login -u AWS -p $(aws ecr get-login-password --region $AWS_DEFAULT_REGION) 456288834429.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
-      - docker push $REPOSITORY_URI:latest
-      - docker push $REPOSITORY_URI:$IMAGE_TAG
+      #- docker push $REPOSITORY_URI:latest
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/ievince-repository:$IMAGE_TAG
+      #- docker push $REPOSITORY_URI:$IMAGE_TAG
       - echo Writing image definitions file...
       - printf '[{"name":"nodeapp","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
       - cat imagedefinitions.json 
