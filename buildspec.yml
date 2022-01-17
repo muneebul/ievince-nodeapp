@@ -6,8 +6,7 @@ phases:
     commands:
       - echo Logging in to Amazon ECR...
       - aws --version
-      - $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
-      - docker login -u AWS -p $(aws ecr get-login-password --region $AWS_DEFAULT_REGION) 456288834429.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+      - $(aws ecr get-login-password | docker login --username AWS --password-stdin 456288834429.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com)
       - REPOSITORY_URI=public.ecr.aws/b2v5x3q1/ievince-repository
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - IMAGE_TAG=build-$(echo $CODEBUILD_BUILD_ID | awk -F":" '{print $2}')
