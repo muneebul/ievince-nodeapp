@@ -6,27 +6,23 @@ phases:
     commands:
       - echo Logging in to Amazon ECR...
       - aws --version
-      - docker login -u AWS -p $(aws ecr get-login-password --region $AWS_DEFAULT_REGION) 456288834429.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
-      #- $(aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/b2v5x3q1)
-      - REPOSITORY_URI=public.ecr.aws/b2v5x3q1/ievince-repository
+      - $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
+      #- docker login --username AWS --password-stdin public.ecr.aws/b2v5x3q1
+      - REPOSITORY_URI=456288834429.dkr.ecr.us-east-1.amazonaws.com/ievince-repository
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - IMAGE_TAG=build-$(echo $CODEBUILD_BUILD_ID | awk -F":" '{print $2}')
   build:
     commands:
       - echo Build started on `date`
       - echo Building the Docker image...
-      - docker build -t ievince-repository .
-      - docker tag ievince-repository:latest public.ecr.aws/b2v5x3q1/ievince-repository:latest
+      - docker build -t $REPOSITORY_URI:latest .
+      - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
   post_build:
     commands:
       - echo Build completed on `date`
       - echo Pushing the Docker images...
-      #- docker login -u AWS -p $(aws ecr get-login-password --region $AWS_DEFAULT_REGION) 456288834429.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
-      - docker images
-      - docker push public.ecr.aws/b2v5x3q1/ievince-repository:latest
-      #- docker push $REPOSITORY_URI:latest
-      #- docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/ievince-repository:$IMAGE_TAG
-      #- docker push $REPOSITORY_URI:$IMAGE_TAG
+      - docker push $REPOSITORY_URI:latest
+      - docker push $REPOSITORY_URI:$IMAGE_TAG
       - echo Writing image definitions file...
       - printf '[{"name":"nodeapp","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
       - cat imagedefinitions.json 
