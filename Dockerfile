@@ -1,4 +1,4 @@
-FROM public.ecr.aws/lts/node:carbon
+FROM public.ecr.aws/lambda/nodejs:latest
 
 
 
