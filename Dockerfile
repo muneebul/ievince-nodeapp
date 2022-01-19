@@ -19,5 +19,4 @@ COPY . .
 
 EXPOSE 8080
 ENTRYPOINT ["node"]
-
 CMD ["server.js"]
