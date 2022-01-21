@@ -10,7 +10,7 @@ const HOST = '0.0.0.0';
 const app = express();
 app.get('/', (req, res) => {
 
-  res.send('<h1 style="color:green;">Hello Muneeb IEvince app - version-1.0!!</h1> \n');
+  res.send('<h1 style="color:green;">sample Hello Muneeb IEvince app - version-1.0!!</h1> \n');
 });
 
 app.listen(PORT, HOST);
